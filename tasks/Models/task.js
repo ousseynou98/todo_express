@@ -1,11 +1,8 @@
 const Sequelize = require('sequelize');
+const { connectDB } = require('../../config/db');
 
-// Configuration bd
-const sequelize = new Sequelize('express', 'root', 'root', {
-  host: 'localhost',
-  dialect: 'mysql'
-});
-
+// Initialisation de la connexion avec la base de données
+const sequelize = connectDB();
 // creation du model
 const Task = sequelize.define('task', {
   id: {
@@ -17,13 +14,6 @@ const Task = sequelize.define('task', {
     type: Sequelize.STRING,
     allowNull: false
   }
-});
-
-
-sequelize.sync().then(() => {
-  console.log('La base de données a été synchronisée avec succès !');
-}).catch((error) => {
-  console.error('Erreur de synchronisation de la base de données :', error);
 });
 
 // Fonctions CRUD pour task
