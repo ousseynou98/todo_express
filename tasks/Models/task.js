@@ -12,7 +12,11 @@ const Task = sequelize.define('task', {
   },
   task: {
     type: Sequelize.STRING,
-    allowNull: false
+    allowNull: true
+  },
+  user: {
+    type: Sequelize.INTEGER,
+    allowNull: true
   }
 });
 
@@ -25,8 +29,8 @@ function getTaskById(id) {
   return Task.findByPk(id);
 }
 
-function addTask(task) {
-  return Task.create({ task });
+function addTask(task,user) {
+  return Task.create({ task,user });
 }
 
 function updateTask(id, task) {

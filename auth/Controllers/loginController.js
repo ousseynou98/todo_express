@@ -1,46 +1,40 @@
 const express = require('express');
-const userService = require('../services/loginService');
-
+const userService = require('../services/userService');
+const bcrypt = require('bcrypt');
 
 const router = express.Router();
 
-const handleError= (res,error) => {
-  console.log(error);
-  res.status(500).send(error);
-};
+router.post('/register', async (req, res) => {
+  try {
+    const { username, email, password, profil } = req.body;
 
-router.post('/login', async (req, res) => {
-  const username = req.body.username;
-  const password = req.body.password;
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const user = await userService.addUser(username, hashedPassword, email, profil);
 
-  if (isValidCredentials(username, password)) {
-    const token = generateAuthToken(username);
-
-    res.json({ token });
-  } else {
-    res.status(401).json({ message: 'Informations d\'identification invalides' });
+    res.status(201).json({ message: 'Utilisateur enregistré avec succès.' });
+  } catch (error) {
+    console.error('Erreur lors de l\'enregistrement de l\'utilisateur:', error);
+    res.status(500).json({ message: 'Une erreur est survenue lors de l\'enregistrement de l\'utilisateur.' });
   }
 });
 
-function authenticate(req, res, next) {
-  const token = req.headers.authorization;
-  if (!token) {
-    return res.status(401).json({ message: 'Jeton d\'authentification manquant' });
-  }
-
+router.post('/login', async (req, res) => {
   try {
-    const decoded = verifyAuthToken(token);
+    const { username, password } = req.body;
 
-    req.user = decoded;
+    const isValid = await userService.isValidCredentials(username, password);
 
-    next();
+    if (!isValid) {
+      return res.status(401).json({ message: 'Nom d\'utilisateur ou mot de passe incorrect.' });
+    }
+
+    const token = userService.generateAuthToken();
+
+    res.json({ token });
   } catch (error) {
-    res.status(401).json({ message: 'Jeton d\'authentification invalide' });
+    console.error('Erreur lors de la connexion de l\'utilisateur:', error);
+    res.status(500).json({ message: 'Une erreur est survenue lors de la connexion de l\'utilisateur.' });
   }
-}
+});
 
-
-
-module.exports = {router};
-    
-//module.exports = router;
+module.exports = { router };
