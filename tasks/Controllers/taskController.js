@@ -1,10 +1,13 @@
 const express = require('express');
 const taskService = require('../services/taskService');
-const { authenticateToken } = require('../../auth/services/userService');
+const { authenticateToken,authenticate } = require('../../auth/services/userService');
+
 
 //const { authenticate } = require('../../auth/Controllers/loginController');
 
 const router = express.Router();
+
+
 
 const handleError= (res,error) => {
   console.log(error);
@@ -12,7 +15,7 @@ const handleError= (res,error) => {
 };
 
 
-router.get('/tasks', async (req, res) => {
+router.get('/tasks',authenticate, async (req, res) => {
   try {
     const tasks = await taskService.getAllTasks();
     res.send(tasks);
@@ -32,26 +35,6 @@ router.get('/tasks/:id', async (req, res) => {
   }
 });
 
-// router.post('/tasks', async (req, res) => {
-//   const task = req.body.task;
-//   try {
-//     const message = await taskService.addTask(task);
-//     res.send(message);
-//   } catch (error) {
-//     handleError(res,error);
-//   }
-// });
-
-// router.post('/tasks', async (req, res) => {
-//   const task = req.body.task;
-//   const userId = req.user; // Obtenez l'ID de l'utilisateur à partir du middleware d'authentification
-//   try {
-//     const message = await taskService.addTask(task, userId);
-//     res.send(message);
-//   } catch (error) {
-//     handleError(res, error);
-//   }
-// });
 
 router.post('/tasks', async (req, res) => {
   const task = req.body.task;

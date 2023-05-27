@@ -28,7 +28,11 @@ router.post('/login', async (req, res) => {
       return res.status(401).json({ message: 'Nom d\'utilisateur ou mot de passe incorrect.' });
     }
 
-    const token = userService.generateAuthToken();
+    // Récupérer l'ID de l'utilisateur à partir de la base de données
+    const user = await userService.getUserByUsername(username);
+    const userId = user.id;
+
+    const token = userService.generateAuthToken(userId);
 
     res.json({ token });
   } catch (error) {

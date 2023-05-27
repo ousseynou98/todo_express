@@ -21,37 +21,17 @@ const bodyParser = require('body-parser');
 const taskRouter = require('./tasks/Controllers/taskController').router;
 const userRouter = require('./users/Controllers/userController').router;
 const loginRouter = require('./auth/Controllers/loginController').router;
-const userService = require('./auth/services/userService');
-
+//const userService = require('./auth/services/userService');
+const { authenticate } = require('./auth/services/userService');
 const app = express();
+//const session = require('express-session');
 
 app.use(bodyParser.json());
 
-app.use('/auth', (req, res, next) => {
-    next(); 
-  });
-  
+
+
 app.use('/auth', loginRouter);
-
-
-// Middleware d'authentification
-app.use((req, res, next) => {
-  const token = req.headers.authorization;
-
-  if (!token) {
-    return res.status(401).json({ message: 'Accès non autorisé. Token manquant.' });
-  }
-
-  try {
-    const userId = userService.authenticateToken(token);
-    req.user = userId; 
-    next();
-  } catch (error) {
-    return res.status(401).json({ message: error.message });
-  }
-//next();
-});
-
+app.use(authenticate);
 
 
 app.use(taskRouter);

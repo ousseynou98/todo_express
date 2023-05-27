@@ -58,6 +58,10 @@ async function isValidCredentials(username, password) {
   return user.comparePassword(password);
 }
 
+async function getUserByUsername(username) {
+  return User.findOne({ where: { username } });
+}
+
 function generateAuthToken(userId) {
   const token = jwt.sign({ userId }, jwtSecret, { expiresIn: '1h' });
   return token;
@@ -75,5 +79,24 @@ function authenticateToken(token) {
   }
 }
 
-module.exports = { addUser, isValidCredentials, generateAuthToken, authenticateToken };
+ function authenticate(req, res, next) {
+  const token = req.headers.authorization;
+
+  if (!token) {
+    return res.status(401).json({ message: 'Accès non autorisé. Token manquant.' });
+  }
+  //console.log("toddddddddkeddn");
+  try {
+    const userId = authenticateToken(token);
+    req.user = userId;
+    //console.log("tokeddn");
+    console.log(userId);
+    next();
+  } catch (error) {
+    return res.status(401).json({ message: error.message });
+  }
+}
+
+
+module.exports = { addUser, isValidCredentials, generateAuthToken, authenticateToken,authenticate,getUserByUsername };
 
