@@ -71,7 +71,7 @@ function authenticateToken(token) {
   try {
     const tokenWithoutPrefix = token.split(' ')[1]; 
     const decodedToken = jwt.verify(tokenWithoutPrefix, jwtSecret);
-    console.log("User ID:", decodedToken.userId); 
+    //console.log("User ID:", decodedToken.userId); 
     return decodedToken.userId;
   } catch (error) {
     const errorMessage = `Invalid token: ${token}. Key used: ${jwtSecret}`;

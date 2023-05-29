@@ -1,5 +1,6 @@
 const express = require('express');
 const userService = require('../services/userService');
+const { authenticateToken,authenticate } = require('../../auth/services/userService');
 
 
 const router = express.Router();
@@ -9,7 +10,7 @@ const handleError= (res,error) => {
   res.status(500).send(error);
 };
 
-router.get('/users', async (req, res) => {
+router.get('/users',authenticate, async (req, res) => {
   try {
     const users = await userService.getAllUsers();
     res.send(users);
@@ -18,7 +19,7 @@ router.get('/users', async (req, res) => {
   }
 });
 
-router.get('/users/:id', async (req, res) => {
+router.get('/users/:id',authenticate, async (req, res) => {
   const id = req.params.id;
   try {
     const user = await userService.getUserById(id);
@@ -28,7 +29,7 @@ router.get('/users/:id', async (req, res) => {
   }
 });
 
-router.post('/users', async (req, res) => {
+router.post('/users',authenticate, async (req, res) => {
   const username = req.body.username;
   const password = req.body.password;
   const email = req.body.email;
@@ -41,7 +42,7 @@ router.post('/users', async (req, res) => {
   }
 });
 
-router.put('/users/:id', async (req, res) => {
+router.put('/users/:id',authenticate, async (req, res) => {
     const id = req.params.id;
     const username = req.body.username;
     const email = req.body.email;
@@ -54,7 +55,7 @@ router.put('/users/:id', async (req, res) => {
     }
 });
 
-router.delete('/users/:id', async (req, res) => {
+router.delete('/users/:id',authenticate, async (req, res) => {
     const id = req.params.id;
     try {
         const message = await userService.deleteUser(id);
