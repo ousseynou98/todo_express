@@ -1,9 +1,7 @@
 const express = require('express');
 const taskService = require('../services/taskService');
-const { authenticateToken,authenticate } = require('../../auth/services/userService');
+const { authenticateToken,authenticate } = require('../Services/authService');
 
-
-//const { authenticate } = require('../../auth/Controllers/loginController');
 
 const router = express.Router();
 

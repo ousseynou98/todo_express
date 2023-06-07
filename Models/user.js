@@ -1,5 +1,5 @@
 const Sequelize = require('sequelize');
-const { connectDB } = require('../../config/db');
+const { connectDB } = require('../config/db');
 const bcrypt = require('bcrypt');
 const { Op } = require("sequelize");
 

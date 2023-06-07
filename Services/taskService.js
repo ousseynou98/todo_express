@@ -1,5 +1,5 @@
 const taskModel = require('../models/task');
-const { authenticateToken } = require('../../auth/services/userService');
+const { authenticateToken } = require('../services/authService');
 const Task = require('../models/task');
 
 

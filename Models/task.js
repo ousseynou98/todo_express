@@ -1,5 +1,5 @@
 const Sequelize = require('sequelize');
-const { connectDB } = require('../../config/db');
+const { connectDB } = require('../config/db');
 
 // Initialisation de la connexion avec la base de données
 const sequelize = connectDB();
