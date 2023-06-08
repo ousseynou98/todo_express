@@ -1,6 +1,7 @@
 const express = require('express');
 const taskService = require('../services/taskService');
 const { authenticateToken,authenticate } = require('../Services/authService');
+const { body, validationResult } = require('express-validator');
 
 
 const router = express.Router();
@@ -32,9 +33,16 @@ router.get('/tasks/:id', async (req, res) => {
 });
 
 
-router.post('/tasks',authenticate, async (req, res) => {
+router.post('/tasks',authenticate,[
+  body('task').notEmpty().withMessage('Le champ task est requis')
+], async (req, res) => {
   const task = req.body.task;
   const token = req.headers.authorization;
+
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
   
   try {
     const userId =await authenticateToken(token);
@@ -46,9 +54,18 @@ router.post('/tasks',authenticate, async (req, res) => {
   }
 });
 
-router.put('/tasks/:id',authenticate, async (req, res) => {
+
+router.put('/tasks/:id',authenticate ,[
+  body('task').notEmpty().withMessage('Le champ task est requis')
+], async (req, res) => {
     const id = req.params.id;
     const task = req.body.task;
+
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+
     try {
         const message = await taskService.updateTask(id, task);
         res.send('Tâche modifiée avec succès.' );
